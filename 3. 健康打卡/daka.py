@@ -1,10 +1,12 @@
 # daka 函数改写自 https://github.com/Tishacy/ZJU-nCov-Hitcarder/blob/master/daka.py，该脚本可以实现定点打卡
 
+import os
 import requests
 import re
 import json
 import time
 import datetime
+import getpass
 import sys 
 sys.path.append("..") 
 from zjuam import ZJUAccount
@@ -54,7 +56,15 @@ def daka(sess):
 
 
 if __name__ == "__main__":
-    zju = ZJUAccount('', '')
+    if os.path.exists('../config.json'):
+        configs = json.loads(open('../config.json', 'r').read())
+        username = configs["username"]
+        password = configs["password"]
+    else:
+        username = input("👤 浙大统一认证用户名: ")
+        password = getpass.getpass('🔑 浙大统一认证密码: ')
+
+    zju = ZJUAccount(username, password)
     sess = zju.login()
     message = daka(sess)
     print(message)

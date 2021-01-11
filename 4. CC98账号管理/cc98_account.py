@@ -1,9 +1,16 @@
+import os
 import requests
 from bs4 import BeautifulSoup
+import getpass
+import json
 from prettytable import PrettyTable
 import sys 
 sys.path.append("..") 
 from zjuam import ZJUAccount
+
+# 防止 windows 命令行打印带颜色字符串失败
+import colorama
+colorama.init(autoreset=True)
 
 def get_cc98_info(sess):
     sess.get('https://account.cc98.org/LogOn?returnUrl=%2F')
@@ -52,7 +59,15 @@ def get_cc98_info(sess):
 
 
 if __name__ == '__main__':
-    zju = ZJUAccount('', '')
+    if os.path.exists('../config.json'):
+        configs = json.loads(open('../config.json', 'r').read())
+        username = configs["username"]
+        password = configs["password"]
+    else:
+        username = input("👤 浙大统一认证用户名: ")
+        password = getpass.getpass('🔑 浙大统一认证密码: ')
+
+    zju = ZJUAccount(username, password)
     sess = zju.login()
     table = get_cc98_info(sess)
     print(table)

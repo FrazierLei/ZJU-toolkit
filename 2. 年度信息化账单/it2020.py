@@ -1,3 +1,6 @@
+import os
+import getpass
+import json
 import sys 
 sys.path.append("..") 
 from zjuam import ZJUAccount
@@ -19,7 +22,15 @@ def get_ticket(sess):
 
 
 if __name__ == '__main__':
-    zju = ZJUAccount('', '')
+    if os.path.exists('../config.json'):
+        configs = json.loads(open('../config.json', 'r').read())
+        username = configs["username"]
+        password = configs["password"]
+    else:
+        username = input("👤 浙大统一认证用户名: ")
+        password = getpass.getpass('🔑 浙大统一认证密码: ')
+
+    zju = ZJUAccount(username, password)
     sess = zju.login()
 
     params = {

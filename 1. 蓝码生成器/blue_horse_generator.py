@@ -1,10 +1,14 @@
-import sys 
-sys.path.append("..") 
-from zjuam import ZJUAccount
+import os
 import re
+import json
 import requests
 import qrcode
 from PIL import Image
+import getpass
+import sys 
+sys.path.append("..") 
+from zjuam import ZJUAccount
+
 
 def generate_blue_horse(sess):
     """
@@ -30,7 +34,15 @@ def generate_blue_horse(sess):
     return image
 
 if __name__ == '__main__':
-    zju = ZJUAccount('', '')
+    if os.path.exists('../config.json'):
+        configs = json.loads(open('../config.json', 'r').read())
+        username = configs["username"]
+        password = configs["password"]
+    else:
+        username = input("👤 浙大统一认证用户名: ")
+        password = getpass.getpass('🔑 浙大统一认证密码: ')
+
+    zju = ZJUAccount(username, password)
     sess = zju.login()
     blue_horse = generate_blue_horse(sess)
     blue_horse.show()
