@@ -22,11 +22,11 @@ def get_ticket(sess):
 
 
 if __name__ == '__main__':
-    if os.path.exists('../config.json'):
-        configs = json.loads(open('../config.json', 'r').read())
-        username = configs["username"]
-        password = configs["password"]
-    else:
+    configs = json.loads(open('../config.json', 'r').read())
+    username = configs["username"]
+    password = configs["password"]
+    if not (username and password):
+        print('未能获取用户名和密码，请手动输入！')
         username = input("👤 浙大统一认证用户名: ")
         password = getpass.getpass('🔑 浙大统一认证密码: ')
 

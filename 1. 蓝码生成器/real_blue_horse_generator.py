@@ -2,7 +2,7 @@ import os
 import re
 import json
 import requests
-import qrcode
+from MyQR import myqr
 from PIL import Image
 import getpass
 import sys 
@@ -18,19 +18,20 @@ def generate_blue_horse(sess):
     """
     resp = sess.get('http://one.zju.edu.cn/pass_code/zx')
     horse_code = re.search(r"text: \'(.*?)\'", resp.text).group(1)
+    
+    myqr.run(
+        words=horse_code,
+        version=1,
+        level='L',
+        picture='./horse.png',
+        colorized=True,
+        contrast=1.0,
+        brightness=1.0,
+        save_name=None,
+        save_dir=os.getcwd()
+    )
 
-    # 初始化二维码对象
-    qr = qrcode.QRCode(
-        version=5,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=5,
-        border=0,
-        )
-    qr.add_data(horse_code)
-    qr.make(fit=True)
-
-    # 生成二维码
-    image = qr.make_image(fill_color="#1E90FF", back_color="white")
+    image = Image.open('./horse_qrcode.png')
     return image
 
 if __name__ == '__main__':
