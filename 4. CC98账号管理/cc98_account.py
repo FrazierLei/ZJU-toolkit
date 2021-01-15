@@ -7,12 +7,15 @@ from prettytable import PrettyTable
 import sys 
 sys.path.append("..") 
 from zjuam import ZJUAccount
-
-# 防止 windows 命令行打印带颜色字符串失败
-import colorama
+import colorama # 防止 windows 命令行打印带颜色字符串失败
 colorama.init(autoreset=True)
 
 def get_cc98_info(sess):
+    """
+    获取该通行证下所有CC98账号的基本信息
+    :param sess: 登录浙大通行证后的 session
+    :return: 包含所需数据的 table 对象
+    """
     sess.get('https://account.cc98.org/LogOn?returnUrl=%2F')
     resp = sess.get('https://account.cc98.org/My')
     bs = BeautifulSoup(resp.text, 'html.parser')
