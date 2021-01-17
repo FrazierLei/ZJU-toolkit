@@ -3,7 +3,7 @@ from prettytable import PrettyTable
 
 
 # 为了防止内网信息泄漏，请从 curl 的转化结果中获取 url
-url = 
+url = ''
 
 data = {
   'send_by_bootstrap_table': 'true',
@@ -12,7 +12,7 @@ data = {
   'searchModel.dateType': '{}',
   'searchModel.numberType': '{}',
   'searchModel.inputSqlType': '0',
-  'bynf': '2020',
+  'bynf': '2021',
   'xydm': '1000',
   'xlccdm': '11',
   'queryModel.showCount': '15',
