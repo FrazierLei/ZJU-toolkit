@@ -26,8 +26,8 @@ if __name__ == '__main__':
     # 授权给软件中心
     sess.get('https://zjuam.zju.edu.cn/cas/oauth2.0/authorize?response_type=code&client_id=yRndoY4MQsFLAq0Md6&redirect_uri=http://user.ms.zju.edu.cn/login')
 
-    software_type = input('请输入想要下载的软件类型序号\n\033[33m1. 微软应用下载\
-        \033[0m\n\033[33m2. Adobe 下载\033[0m \n\033[33m3. Matlab 下载\033[0m\n')
+    software_type = input('请输入想要下载的软件类型序号\n\033[33m1. Microsoft 软件下载\
+        \033[0m\n\033[33m2. Adobe 软件下载\033[0m \n\033[33m3. MATLAB 软件下载\033[0m\n')
     
     assert int(software_type) in [1, 2, 3], '请输入正确的软件类型'
     
@@ -38,6 +38,7 @@ if __name__ == '__main__':
     elif software_type == '3':
         software = 'matlab'
 
+    print(f'正在获取{software}下载链接，请耐心等待。')
     # 初始化 list
     name_list = []
     desc_list = []
@@ -55,18 +56,38 @@ if __name__ == '__main__':
             desc_list.append(div.li.text.replace('\n', ''))
 
             # 直接下载
-            if 'http' in div.find_all('a')[-1]['href']:
-                url_list.append(div.find_all('a')[-1]['href'])
+            url = div.find('a')['href']
+            if url == 'javascript:;':
+                links = div.ul.find_all('a')
+                multi_url = ''
+                for link in links:
+                    version = link.text.replace('下载', '')
+                    multi_url += f'[\033[1;31m{version}\033[0m]' + link['href'] + '\n'
+                url_list.append(multi_url.rstrip('\n'))
+            
             # 需要再次获取下载链接
             else:
-                # 下载默认版本（通常为32位中文版）
-                data = {
-                    'name': re.sub('[\u4e00-\u9fa5]', '', div.h2.text)\
-                    .replace(' ', '').replace('.', '_').lower(),
-                    'bit': '0'
-                }
-                url = sess.post(download_url, data=data, allow_redirects=False).headers['Location']
-                url_list.append(url if url != 'http://ms.zju.edu.cn' else '获取失败，请前往官网获取')
+                url = 'http://ms.zju.edu.cn' + url
+                resp = sess.get(url)
+                bs = BeautifulSoup(resp.text, 'html.parser')
+                name = bs.find('input')['value']
+                options = bs.find_all('option')
+
+                # 有的软件有多个版本
+                multi_url = ''
+                for option in options:
+                    bit = option['value']
+                    version = option.text.replace('本站下载', '')
+                    if not version:
+                        version = '通用版本'
+                    data = {
+                        'name': name,
+                        'bit': str(bit)
+                    }
+                    redirect_url = sess.post(download_url, data=data, allow_redirects=False).headers['Location']
+                    multi_url += f'[\033[1;31m{version}\033[0m]' + redirect_url + '\n'
+
+                url_list.append(multi_url.rstrip('\n'))
     else:
         for div in divs :
             name_list.append(div.h2.text + ' ' + div.a.text.replace('下载', ''))
