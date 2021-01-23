@@ -6,7 +6,7 @@ import time
 
 
 class CC98:
-    def __init__(self, username, password):
+    def __init__(self, username, password, special_topic_id, start_floor):
         """
         初始化。
         :param username: 用户名
@@ -17,8 +17,8 @@ class CC98:
         self.password = password
         self.token = ""
         self.expiretime = -1
-        self.special_topic_id = 4990321
-        self.start_floor = 2
+        self.special_topic_id = special_topic_id
+        self.start_floor = start_floor
 
     def login(self):
         """
@@ -82,7 +82,7 @@ class CC98:
             end = re.search("目的地[：:](.*)", content).group(1)
             contact = re.search("联系方式[：:](.*)", content).group(1)
             return f'[tr][th]{date}[/th][th]{time_}[/th][th]{start}[/th][th]{end}[/th][th]{contact}[/th]'
-        except AttributeError:
+        except:
             return None
 
     def make_table(self, check_last_table=True):
@@ -127,7 +127,7 @@ class CC98:
 
 
 if __name__ == '__main__':
-    cc98 = CC98(username='', password='')
+    cc98 = CC98(username='', password='', special_topic_id=5026129, start_floor=2)
     cc98.login()
     table = cc98.make_table(check_last_table=False)
     print(table)

@@ -21,16 +21,6 @@
 
 
 
-##  需要手动调整的参数
-
-- `self.special_topic_id`：拼车专楼的 `topic_id` ，例如4990321
-- `self.start_floor`：拼车专楼中开始统计的楼层（如果从3楼开始，则输入2，以此类推）
-
-- `cc98 = CC98(username='', password='')`中的用户名和密码。如果帖子是在内部板块，则需要版主以上权限的账号。如果是一般版面，则可以是普通账号。
-- `table = cc98.make_table(check_last_table=False)` 中 `check_last_table` 表示是否检查上次保存的信息，如果为 `False` 则从头开始获取每层楼的内容，如果为 `True` 则从上一次获取的最后一层楼的下一层开始。
-
-
-
 ## 环境需求
 
 - Python 3.6 或更新版本
@@ -45,10 +35,31 @@
 
 ## 使用方法
 
-```
+###  手动调整几个参数
+
+- 首先创建一个 CC98 对象：
+
+  `CC98(username=, password=, special_topic_id=, start_floor=)`
+
+  其中：
+
+  - `username`、`password`：98用户名和密码。如果帖子是在内部板块，则需要版主以上权限的账号。如果是一般版面，则可以是普通账号。
+  - `special_topic_id`：拼车专楼的 `topic_id` ，例如5026129
+  - `start_floor`：拼车专楼中开始统计的楼层（如果从3楼开始，则输入2，以此类推）
+
+- 然后生成 ubb 语法的表格代码：
+
+  `table = cc98.make_table(check_last_table=False)` 中 `check_last_table` 表示是否检查上次保存的信息，如果为 `False` 则从头开始获取每层楼的内容，如果为 `True` 则从上一次获取的最后一层楼的下一层开始。
+
+
+
+### 运行程序
+
+```shell
 $ python pinche.py
 ```
 
 控制台中会打印出生成的表格，复制编辑到汇总楼中。
 
 当前路径下会生成一个 `last_table.txt` 文件，包含本次程序运行时的最新楼层和表格代码。
+
