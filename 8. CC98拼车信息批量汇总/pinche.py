@@ -33,11 +33,11 @@ class CC98:
             'password': self.password,
             'scope': 'cc98-api openid offline_access'
         }
-        x = self.sess.post("https://openid.cc98.org/connect/token",
+        resp = self.sess.post('https://openid.cc98.org/connect/token',
                            data=login_data,
-                           headers={"content-type": "application/x-www-form-urlencoded"})
+                           headers={'content-type': 'application/x-www-form-urlencoded'})
 
-        data = x.json()
+        data = resp.json()
         token = data['access_token']
         expirein = data['expires_in']
         self.token = token
